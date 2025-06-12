@@ -33,8 +33,93 @@ col_keep: ['period',
            'netWgt', 
            'primaryValue']
 
-# The weight of network edges to choose
-weight: 'primary_value'
+# Flow code to keep for analysis
+flow_keep: ['M']
 
-# Threshold to apply for identifying main contributors to trade
-threshold_main_contributors: 0.01
+# List of EU countries and corresponding iso codes
+eu:
+  countries: ['Austria', 
+              'Belgium',
+              'Belgium-Luxembourg (...1998)',
+              'Bulgaria',
+              'Croatia',
+              'Cyprus',
+              'Czechia',
+              'Denmark',
+              'Estonia',
+              'Finland',
+              'France',
+              'Germany',
+              'Greece',
+              'Hungary',
+              'Ireland',
+              'Italy',
+              'Latvia',
+              'Lithuania',
+              'Luxembourg',
+              'Malta',
+              'Netherlands',
+              'Poland',
+              'Portugal',
+              'Romania',
+              'Slovakia',
+              'Slovenia',
+              'Spain',
+              'Sweden',
+              'United Kingdom']
+  iso: ['AUT',
+        'BEL',
+        'BGR',
+        'CYP',
+        'CZE',
+        'DEU',
+        'DNK',
+        'ESP',
+        'EST',
+        'FIN',
+        'FRA',
+        'GBR',
+        'GRC',
+        'HRV',
+        'HUN',
+        'IRL',
+        'ITA',
+        'LTU',
+        'LUX',
+        'LVA',
+        'MLT',
+        'NLD',
+        'POL',
+        'PRT',
+        'ROU',
+        'SVK', 
+        'SVN',
+        'SWE']
+
+# List of risky countries and corresponding iso codes
+risky: 
+  countries: ['Brazil',
+              'Cameroon',
+              'China',
+              'Congo',
+              'Dem. Rep. of the Congo',
+              'Ghana',
+              'Indonesia',
+              "Lao People's Dem. Rep.",
+              'Malaysia',
+              'Papua New Guinea',
+              'Thailand',
+              'Viet Nam']
+  iso: ['BRA', 
+        'CHN',
+        'CMR',
+        'COD',
+        'COG',
+        'GHA',
+        'IDN',
+        'LAO',
+        'MYS',
+        'PNG',
+        'THA',
+        'VNM']
+
