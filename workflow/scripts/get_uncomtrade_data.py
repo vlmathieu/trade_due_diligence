@@ -2,7 +2,8 @@ from snakemake.script import snakemake
 import polars as pl
 import polars.selectors as cs
 import comtradeapicall
-from tqdm import tqdm 
+from tqdm import tqdm
+import itertools
 
 def get_uncomtrade(apikey: str, year: str, cmd: str, flow: str):
     '''
@@ -57,9 +58,16 @@ def chunks(lst: list, n: int):
         List to divide into chunks.
     n : integer
         Size of the chunks.
+    
+    Returns
+    -------
+    chunks : list of list
+        List of chunks.
     '''
-    for i in range(0, len(lst), n):
-        yield lst[i:i + n]
+
+    chunks = [lst[i:i + n] for i in range(0, len(lst), n)]
+
+    return chunks
 
 def get_uncomtrade_bulk(apikey: str, years: list, cmdCode: list, flowCode: list):
     '''
@@ -93,8 +101,8 @@ def get_uncomtrade_bulk(apikey: str, years: list, cmdCode: list, flowCode: list)
                 ','.join([str(_) for _ in cmd_batch]),
                 ','.join([str(_) for _ in flowCode])
             ))
-        for years_batch in chunks(years, 5)
-        for cmd_batch in tqdm(chunks(cmdCode, 3))]
+        for years_batch, cmd_batch 
+        in tqdm(list(itertools.product(chunks(years, 5), chunks(cmdCode, 2))))]
     )
 
     # Concatenate all batch
