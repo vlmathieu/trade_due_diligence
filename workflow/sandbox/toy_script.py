@@ -18,6 +18,5 @@ excluded_iso = ['XX', '_X', '\\d']
 
 # Load data
 uncomtrade_data = pl.read_parquet('/Users/valentinmathieu/Desktop/wd/trade_due_diligence/resources/public/uncomtrade_data.parquet.gzip')
-
-# Exploring data
-uncomtrade_data.columns
+input_data = pl.read_parquet('/Users/valentinmathieu/Desktop/wd/trade_due_diligence/results/input/input_data.parquet.gzip')
+input_data_eu = pl.read_parquet('/Users/valentinmathieu/Desktop/wd/trade_due_diligence/results/intermediary/input_data_eu.parquet.gzip')
