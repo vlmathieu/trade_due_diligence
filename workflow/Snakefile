@@ -1,0 +1,20 @@
+from snakemake.utils import min_version
+
+# set minimum snakemake version
+min_version('8.16.0')
+
+# parameters from the config file
+configfile: 
+    'config/config.yaml'
+
+# environment variable
+envvars:
+    'comtrade_apikey'
+
+# load rules
+include: 'rules/get_uncomtrade.smk'
+
+# target rule
+rule all:
+    input:
+        'resources/public/uncomtrade_data.parquet.gzip'

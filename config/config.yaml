@@ -1,0 +1,40 @@
+# Years of trade
+years:
+  start: 1996
+  stop: 2024  # process will consider stop year - 1 only
+
+# HS codes --> products of interest
+cmdCode: [4403,
+          4407,
+          4408,
+          4812]
+
+# Trade flows to download --> Imports, Exports
+flowCode: ['M', 'X']
+
+# ISO code to exclude from analysis
+excluded_iso: ['XX', '_X', '\d']
+# This excludes the following non-country reporters or partners:
+#    ['Southern African Customs Union (...1999)', 'Other Asia, nes',
+#    'World', 'Areas, nes', 'Oceania, nes', 'Bunkers',
+#    'Special Categories', 'Other Europe, nes', 'Other Africa, nes',
+#    'Rest of America, nes', 'Free Zones', 'Western Asia, nes',
+#    'CACM, nes', 'LAIA, nes', 'Caribbean, nes', 'Northern Africa, nes',
+#    'North America and Central America, nes']
+
+# Columns to keep for analysis (lighten computation)
+col_keep: ['period', 
+           'reporterISO', 
+           'reporterDesc', 
+           'flowCode', 
+           'partnerISO', 
+           'partnerDesc',
+           'cmdCode',  
+           'netWgt', 
+           'primaryValue']
+
+# The weight of network edges to choose
+weight: 'primary_value'
+
+# Threshold to apply for identifying main contributors to trade
+threshold_main_contributors: 0.01
