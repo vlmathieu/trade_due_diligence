@@ -13,8 +13,10 @@ envvars:
 
 # load rules
 include: 'rules/get_uncomtrade.smk'
+include: 'rules/filter_data.smk'
 
 # target rule
 rule all:
     input:
-        'resources/public/uncomtrade_data.parquet.gzip'
+        'resources/public/uncomtrade_data.parquet.gzip',
+        'results/input/input_data.parquet.gzip'
