@@ -123,3 +123,85 @@ risky:
         'THA',
         'VNM']
 
+# Year of implementation and country names/iso for each due diligence policy
+policy:
+  # USA Lacey Act
+  lacey_act:
+    year: 2008
+    countries: ['USA']
+    iso: ['USA']
+  # Australian Illegal Logging Prohibition Act
+  ilpa:
+    year: 2012
+    countries: ['Australia']
+    iso: ['AUS']
+  # European Union Timber Regulation
+  eutr:
+    year: 2013
+    countries: ['Austria', 
+                'Belgium',
+                'Belgium-Luxembourg (...1998)',
+                'Bulgaria',
+                'Croatia',
+                'Cyprus',
+                'Czechia',
+                'Denmark',
+                'Estonia',
+                'Finland',
+                'France',
+                'Germany',
+                'Greece',
+                'Hungary',
+                'Ireland',
+                'Italy',
+                'Latvia',
+                'Lithuania',
+                'Luxembourg',
+                'Malta',
+                'Netherlands',
+                'Poland',
+                'Portugal',
+                'Romania',
+                'Slovakia',
+                'Slovenia',
+                'Spain',
+                'Sweden',
+                'United Kingdom']
+    iso: ['AUT',
+                    'BEL',
+                    'BGR',
+                    'CYP',
+                    'CZE',
+                    'DEU',
+                    'DNK',
+                    'ESP',
+                    'EST',
+                    'FIN',
+                    'FRA',
+                    'GBR',
+                    'GRC',
+                    'HRV',
+                    'HUN',
+                    'IRL',
+                    'ITA',
+                    'LTU',
+                    'LUX',
+                    'LVA',
+                    'MLT',
+                    'NLD',
+                    'POL',
+                    'PRT',
+                    'ROU',
+                    'SVK', 
+                    'SVN',
+                    'SWE']
+  # Japanese Clean Wood Act
+  cwa:
+    year: 2016
+    countries: ['Japan']
+    iso: ['JPN']
+  # South Korean Act of Sustainable Use of Timber
+  asut:
+    year: 2018
+    countries: ['Rep. of Korea']
+    iso: ['KOR']
