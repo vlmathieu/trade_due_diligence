@@ -13,13 +13,18 @@ envvars:
 
 # load rules
 include: 'rules/get_uncomtrade.smk'
+include: 'rules/get_faostat.smk'
+include: 'rules/process_faostat_data.smk'
 include: 'rules/filter_data.smk'
 include: 'rules/aggregate_eu.smk'
-include: 'rules/group_bin.smk'
+# include: 'rules/group_bin.smk'
 
 # target rule
 rule all:
     input:
-        'resources/public/uncomtrade_data.parquet.gzip',
-        'results/input/input_data.parquet.gzip',
-        'results/intermediary/input_data_eu.parquet.gzip'
+        'resources/public/uncomtrade.parquet.gzip',
+        'resources/public/faostat.csv',
+        'results/input/input_faostat.csv',
+        'results/intermediary/processed_faostat.csv',
+        'results/input/input_uncomtrade.parquet.gzip',
+        'results/input/input_uncomtrade_eu.parquet.gzip'
