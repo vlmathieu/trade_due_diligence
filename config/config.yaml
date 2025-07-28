@@ -4,13 +4,46 @@ years:
   stop: 2024  # process will consider stop year - 1 only
 
 # HS codes --> products of interest
-cmdCode: [4403,
-          4407,
-          4408,
-          4812]
+cmdCode: [4403,    # Wood in the rough, whether or not stripped of bark or sapwood, or roughly squared. 
+                   # ~Roundwood
+          4408,    # Sheets for veneering (including those obtained by slicing laminated wood), for plywood or for similar laminated wood and other 
+                   # wood, sawn lengthwise, sliced or peeled, whether or not planed, sanded, spliced or end-jointed, of a thickness not exceeding 6 mm. 
+                   # ~Veneer sheets
+          4407,    # Wood sawn or chipped lengthwise, sliced or peeled, whether or not planed, sanded or end-jointed, of a thickness exceeding 6 mm. 
+                   # ~Sawnwood
+          4412,    # Plywood, veneered panels and similar laminated wood.
+                   # ~Plywood and LVL
+          4411,    # Fibreboard of wood or other ligneous materials, whether or not bonded with resins or other organic substances.
+                   # ~Fibreboard
+          441012,  # Oriented strand board (OSB) 
+                   # ~Oriented strand board (OSB)
+          47,      # Pulp of wood or of other fibrous cellulosic material; recovered (waste and scrap) paper or paperboard
+                   # ~Wood pulp
+          48       # Paper and paperboard; articles of paper pulp, of paper or of paperboard
+                   # ~Paper and paperboard
+          ]
 
 # Trade flows to download --> Imports, Exports
 flowCode: ['M', 'X']
+
+# FAO Item and Item codesfor products of interest
+fao:
+  items: ['Roundwood',
+          'Veneer sheets',
+          'Sawnwood',
+          'Plywood and LVL',
+          'Fibreboard',
+          'Oriented strand board (OSB)',
+          'Wood pulp',
+          'Paper and paperboard']
+  item_codes: [1861,
+               1634,
+               1872,
+               1640,
+               1874,
+               1606,
+               1875,
+               1876]
 
 # ISO code to exclude from analysis
 excluded_iso: ['XX', '_X', '\d']
@@ -23,15 +56,24 @@ excluded_iso: ['XX', '_X', '\d']
 #    'North America and Central America, nes']
 
 # Columns to keep for analysis (lighten computation)
-col_keep: ['period', 
-           'reporterISO', 
-           'reporterDesc', 
-           'flowCode', 
-           'partnerISO', 
-           'partnerDesc',
-           'cmdCode',  
-           'netWgt', 
-           'primaryValue']
+col_keep:
+  uncomtrade: ['period', 
+               'reporterISO', 
+               'reporterDesc', 
+               'flowCode', 
+               'partnerISO', 
+               'partnerDesc',
+               'cmdCode',  
+               'netWgt', 
+               'primaryValue']
+  fao: ['Area Code (ISO3)',
+        'Area',
+        'Element',
+        'Item Code',
+        'Item',
+        'Year',
+        'Unit',
+        'Value']
 
 # Flow code to keep for analysis
 flow_keep: ['M']
