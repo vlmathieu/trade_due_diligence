@@ -13,8 +13,8 @@ corr_table = pl.from_dict(
     {
         "cmdCode": snakemake.params['cmdCode'],
         "cmdDesc": snakemake.params['cmdDesc'],
-        "faoCode": snakemake.params['fao_items'],
-        "faoDesc": snakemake.params['fao_item_codes']
+        "faoCode": snakemake.params['fao_item_codes'],
+        "faoDesc": snakemake.params['fao_items']
     }
 )
 logging.info(f"Corresponding table built:\n {corr_table}")
