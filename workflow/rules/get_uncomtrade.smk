@@ -1,6 +1,6 @@
 rule get_uncomtrade:
     output:
-        'resources/public/uncomtrade_data.parquet.gzip'
+        'resources/public/uncomtrade.parquet.gzip'
     params:
         year_start      = config['years']['start'],
         year_stop       = config['years']['stop'],
