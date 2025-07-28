@@ -1,8 +1,8 @@
 rule group_bin:
     input:
-        'results/input/input_data.parquet.gzip',
+        'results/input/input_uncomtrade.parquet.gzip',
     output:
-        'results/intermediary/data_group_bin.parquet.gzip'
+        'results/intermediary/uncomtrade_group_bin.parquet.gzip'
     params:
         policies   = config['policy'],
         risky      = config['risky']['countries']
