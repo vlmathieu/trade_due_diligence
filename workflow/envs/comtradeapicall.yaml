@@ -1,7 +1,6 @@
 channels:
   - conda-forge
   - defaults
-  - bioconda
 dependencies:
   - polars =1.2.1
   - tqdm =4.66.4
