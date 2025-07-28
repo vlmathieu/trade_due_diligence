@@ -1,13 +1,13 @@
 rule filter_data:
     input:
-        'resources/public/uncomtrade_data.parquet.gzip'
+        'resources/public/uncomtrade.parquet.gzip'
     output:
-        'results/input/input_data.parquet.gzip'
+        'results/input/input_uncomtrade.parquet.gzip'
     params:
         year_stop       = config['years']['stop'],
         flow_keep       = config['flow_keep'],
         excluded_iso    = config['excluded_iso'],
-        col_keep        = config['col_keep']
+        col_keep        = config['col_keep']['uncomtrade']
     log:
         'workflow/logs/filter_data.log'
     threads: 1

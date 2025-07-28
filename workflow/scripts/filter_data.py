@@ -1,4 +1,5 @@
 from snakemake.script import snakemake
+import logging
 import polars as pl
 import re
 
@@ -32,10 +33,18 @@ def format_col_names(col_names: list) -> dict:
 
     return col_mapping
 
+# Log file edition
+logging.basicConfig(filename=snakemake.log[0],
+                    level=logging.INFO,
+                    format='%(asctime)s %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S')
+
 # Load data
 uncomtrade_data = pl.read_parquet(snakemake.input[0])
+logging.info(f"Uncomtrade downloaded:\n {uncomtrade_data.head(5)}\n")
 
 # Filter data for network analysis
+logging.info(f"\nData cover trade until {snakemake.params['year_stop']}.\n")
 input_data = (
     uncomtrade_data
         .select(snakemake.params['col_keep'])
@@ -60,6 +69,7 @@ input_data = (
         # Drop potential duplicates
         .unique()
 )
+logging.info(f"Filtered data:\n {input_data.describe()}\n")
 
 # Drop outliers = values under fifth percentile for weight (kg) and value (USD)
 stats_desc = (
@@ -84,9 +94,11 @@ input_data = (
         pl.col('primary_value') > min_value.item()
     )
 )
+logging.info(f"Saved data after deleting outliers:\n {input_data.describe()}")
 
 # Save input data
 input_data.write_parquet(
     snakemake.output[0],
     compression='gzip'
     )
+logging.info("Data saved.")
