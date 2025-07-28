@@ -1,11 +1,20 @@
 from snakemake.script import snakemake
+import logging
 import polars as pl
+
+# Log file edition
+logging.basicConfig(filename=snakemake.log[0],
+                    level=logging.INFO,
+                    format='%(asctime)s %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S')
 
 # Load data
 input_data = pl.read_parquet(snakemake.input[0])
+logging.info(f"\nInput data downloaded: \n {input_data.head(5)} \n")
 
 # Transform EU country names and iso to "European Union" and "EU", respectively
 eu = snakemake.params['eu']
+logging.info(f"European countries considered: {eu}")
 eu_iso = snakemake.params['eu_iso']
 input_data_eu = (input_data
     .with_columns(
@@ -43,9 +52,11 @@ input_data_eu = (
     .group_by(groupby_cols)
     .agg(pl.sum(sum_cols))
  )
+logging.info(f"Data with european countries aggregated to EU:\n {input_data_eu.head(5)} \n {input_data_eu.describe()}")
 
 # Save input data with aggregation of EU countries
 input_data_eu.write_parquet(
     snakemake.output[0],
     compression='gzip'
     )
+logging.info("Data saved.")

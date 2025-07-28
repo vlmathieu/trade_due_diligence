@@ -1,8 +1,8 @@
 rule aggregate_eu:
     input:
-        'results/input/input_data.parquet.gzip'
+        'results/input/input_uncomtrade.parquet.gzip'
     output:
-        'results/intermediary/input_data_eu.parquet.gzip'
+        'results/input/input_uncomtrade_eu.parquet.gzip'
     params:
         eu      = config['eu']['countries'],
         eu_iso  = config['eu']['iso']
