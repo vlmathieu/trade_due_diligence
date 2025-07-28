@@ -1,7 +1,7 @@
 # Years of trade
 years:
   start: 1996
-  stop: 2024  # process will consider stop year - 1 only
+  stop: 2024  # process will consider stop year - 2 only
 
 # HS codes --> products of interest
 cmdCode: [4403,    # Wood in the rough, whether or not stripped of bark or sapwood, or roughly squared. 
