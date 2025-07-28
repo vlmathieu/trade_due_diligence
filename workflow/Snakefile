@@ -14,6 +14,7 @@ envvars:
 # load rules
 include: 'rules/get_uncomtrade.smk'
 include: 'rules/get_faostat.smk'
+include: 'rules/corresponding_table.smk'
 include: 'rules/process_faostat_data.smk'
 include: 'rules/filter_data.smk'
 include: 'rules/aggregate_eu.smk'
@@ -24,6 +25,7 @@ rule all:
     input:
         'resources/public/uncomtrade.parquet.gzip',
         'resources/public/faostat.csv',
+        'resources/inhouse/corresponding_table.csv',
         'results/input/input_faostat.csv',
         'results/intermediary/processed_faostat.csv',
         'results/input/input_uncomtrade.parquet.gzip',
