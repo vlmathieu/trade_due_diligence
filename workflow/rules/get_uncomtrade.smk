@@ -4,7 +4,7 @@ rule get_uncomtrade:
     params:
         year_start      = config['years']['start'],
         year_stop       = config['years']['stop'],
-        cmdCode         = config['cmdCode'],
+        cmdCode         = config['uncomtrade']['cmdCode'],
         flowCode        = list(str(flow) for flow in config['flowCode']),
         apikey          = os.environ['comtrade_apikey']
     log:

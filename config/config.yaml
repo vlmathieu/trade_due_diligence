@@ -4,24 +4,25 @@ years:
   stop: 2024  # process will consider stop year - 2 only
 
 # HS codes --> products of interest
-cmdCode: [4403,    # Wood in the rough, whether or not stripped of bark or sapwood, or roughly squared. 
-                   # ~Roundwood
-          4408,    # Sheets for veneering (including those obtained by slicing laminated wood), for plywood or for similar laminated wood and other 
-                   # wood, sawn lengthwise, sliced or peeled, whether or not planed, sanded, spliced or end-jointed, of a thickness not exceeding 6 mm. 
-                   # ~Veneer sheets
-          4407,    # Wood sawn or chipped lengthwise, sliced or peeled, whether or not planed, sanded or end-jointed, of a thickness exceeding 6 mm. 
-                   # ~Sawnwood
-          4412,    # Plywood, veneered panels and similar laminated wood.
-                   # ~Plywood and LVL
-          4411,    # Fibreboard of wood or other ligneous materials, whether or not bonded with resins or other organic substances.
-                   # ~Fibreboard
-          441012,  # Oriented strand board (OSB) 
-                   # ~Oriented strand board (OSB)
-          47,      # Pulp of wood or of other fibrous cellulosic material; recovered (waste and scrap) paper or paperboard
-                   # ~Wood pulp
-          48       # Paper and paperboard; articles of paper pulp, of paper or of paperboard
-                   # ~Paper and paperboard
+uncomtrade:
+  cmdCode: [4403,    # Wood in the rough, whether or not stripped of bark or sapwood, or roughly squared. 
+            4408,    # Sheets for veneering (including those obtained by slicing laminated wood), for plywood or for similar laminated wood and other wood, sawn lengthwise, sliced or peeled, whether or not planed, sanded, spliced or end-jointed, of a thickness not exceeding 6 mm. 
+            4407,    # Wood sawn or chipped lengthwise, sliced or peeled, whether or not planed, sanded or end-jointed, of a thickness exceeding 6 mm. 
+            4412,    # Plywood, veneered panels and similar laminated wood.
+            4411,    # Fibreboard of wood or other ligneous materials, whether or not bonded with resins or other organic substances.
+            441012,  # Oriented strand board (OSB) 
+            47,      # Pulp of wood or of other fibrous cellulosic material; recovered (waste and scrap) paper or paperboard
+            48       # Paper and paperboard; articles of paper pulp, of paper or of paperboard
           ]
+  cmdDesc: ['Wood in the rough, whether or not stripped of bark or sapwood, or roughly squared.',
+            'Sheets for veneering (including those obtained by slicing laminated wood), for plywood or for similar laminated wood and other wood, sawn lengthwise, sliced or peeled, whether or not planed, sanded, spliced or end-jointed, of a thickness not exceeding 6 mm.',
+            'Wood sawn or chipped lengthwise, sliced or peeled, whether or not planed, sanded or end-jointed, of a thickness exceeding 6 mm.',
+            'Plywood, veneered panels and similar laminated wood.',
+            'Fibreboard of wood or other ligneous materials, whether or not bonded with resins or other organic substances.',
+            'Oriented strand board (OSB)',
+            'Pulp of wood or of other fibrous cellulosic material; recovered (waste and scrap) paper or paperboard',
+            'Paper and paperboard; articles of paper pulp, of paper or of paperboard'
+           ]
 
 # Trade flows to download --> Imports, Exports
 flowCode: ['M', 'X']
