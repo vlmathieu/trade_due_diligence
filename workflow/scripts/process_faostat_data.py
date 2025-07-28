@@ -16,6 +16,12 @@ faostat_data = pl.read_csv(
 )
 logging.info(f"\nFAOSTAT data downloaded: \n {faostat_data.head(5)} \n")
 
+corr_table = pl.read_csv(
+    source=snakemake.input[1],
+    separator=';'
+)
+logging.info(f"\nCorresponding table downloaded: \n {corr_table} \n")
+
 # Filter data
 logging.info(f"\nItem codes considered: {snakemake.params['item_codes']} \n")
 logging.info(f"\nData cover trade from {snakemake.params['year_start']} to {snakemake.params['year_stop']-2}.\n")
@@ -38,13 +44,19 @@ filter_data = (faostat_data
                    ~pl.col('Unit').str.contains('USD')
                 )
                .select(snakemake.params['col_keep'])
+               .join(
+                   corr_table.select(pl.exclude('faoDesc')),
+                   left_on='Item Code',
+                   right_on='faoCode')
 )
+logging.info(f"Filtered and joined data: \n {filter_data.head(5)} \n\n {filter_data.describe()} \n\n Columns: {filter_data.columns}\n")
 
 # Process domestic consumption variables
+cols = filter_data.select(pl.exclude(['Element', 'Value'])).columns
 process_data = (filter_data
                 .pivot(
                    on='Element',
-                   index=['Area Code (ISO3)', 'Area', 'Item Code', 'Item', 'Year', 'Unit'],
+                   index=cols,
                    values='Value'
                )
                .with_columns(
@@ -60,7 +72,7 @@ process_data = (filter_data
                        )
                )
 )
-logging.info(f"Proccessed data: \n {process_data.head(5)} \n\n {process_data.describe()}")
+logging.info(f"Proccessed data: \n {process_data.head(5)} \n\n {process_data.describe()} \n\n Columns: {process_data.columns}\n")
 
 # Save data
 filter_data.write_csv(

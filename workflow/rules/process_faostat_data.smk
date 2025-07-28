@@ -1,6 +1,7 @@
 rule process_faostat_data:
     input:
-        'resources/public/faostat.csv'
+        'resources/public/faostat.csv',
+        'resources/inhouse/corresponding_table.csv'
     output:
         'results/input/input_faostat.csv',
         'results/intermediary/processed_faostat.csv'
