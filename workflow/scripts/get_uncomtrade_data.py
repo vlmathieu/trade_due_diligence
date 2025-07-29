@@ -137,6 +137,8 @@ UN_Comtrade_data, check_list = get_uncomtrade_bulk(
 
 logging.info(f"\nDataframe head:\n {UN_Comtrade_data.head(5)} \n")
 logging.info(f"\nDataframe size (rows, columns):\n {UN_Comtrade_data.shape} \n")
+logging.info(f"\nProducts covered: {UN_Comtrade_data.select(pl.col('cmdCode')).unique().to_series().to_list()} \n")
+logging.info(f"\Years covered: {UN_Comtrade_data.select(pl.col('period')).unique().to_series().to_list()} \n")
 
 # Save data if check list passed
 if all(check_list):
