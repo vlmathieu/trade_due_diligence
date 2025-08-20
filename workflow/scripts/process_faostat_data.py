@@ -23,13 +23,14 @@ corr_table = pl.read_csv(
 logging.info(f"\nCorresponding table downloaded: \n {corr_table} \n")
 
 # Filter data
-logging.info(f"\nItem codes considered: {snakemake.params['item_codes']} \n")
+item_codes = corr_table.select(pl.col('faoCode')).to_series().to_list()
+logging.info(f"\nItem codes considered: {item_codes} \n")
 logging.info(f"\nData cover trade from {snakemake.params['year_start']} to {snakemake.params['year_stop']-2}.\n")
 filter_data = (faostat_data
                .filter(
                    
                    # Select item codes considered
-                   pl.col('Item Code').is_in(snakemake.params['item_codes']),
+                   pl.col('Item Code').is_in(item_codes),
 
                    # Keep data in specified time range
                    pl.col('Year') >= snakemake.params['year_start'],
@@ -61,12 +62,12 @@ process_data = (filter_data
                )
                .with_columns(
                    dom_consumption=(
-                       pl.when(pl.col('Production') > 0)
+                       pl.when((pl.col('Production')-pl.col('Export quantity')) > 0)
                        .then(pl.col('Production')-pl.col('Export quantity'))
                        .otherwise(0)
                        ),
                    share_dom_consumption=(
-                       pl.when(pl.col('Production') > 0)
+                       pl.when((pl.col('Production')-pl.col('Export quantity')) > 0)
                        .then((pl.col('Production')-pl.col('Export quantity'))/pl.col('Production')*100)
                        .otherwise(0)
                        )
