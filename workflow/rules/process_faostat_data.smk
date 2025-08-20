@@ -8,7 +8,6 @@ rule process_faostat_data:
     params:
         year_start      = config['years']['start'],
         year_stop       = config['years']['stop'],
-        item_codes      = config['fao']['item_codes'],
         excluded_iso    = config['excluded_iso'],
         col_keep        = config['col_keep']['fao']
     log:
