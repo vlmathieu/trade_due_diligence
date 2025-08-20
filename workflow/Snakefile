@@ -12,6 +12,7 @@ envvars:
     'comtrade_apikey'
 
 # load rules
+include: 'rules/products_under_due_diligence.smk'
 include: 'rules/get_uncomtrade.smk'
 include: 'rules/get_faostat.smk'
 include: 'rules/corresponding_table.smk'
@@ -29,4 +30,5 @@ rule all:
         'results/input/input_faostat.csv',
         'results/intermediary/processed_faostat.csv',
         'results/input/input_uncomtrade.parquet.gzip',
-        'results/input/input_uncomtrade_eu.parquet.gzip'
+        'results/input/input_uncomtrade_eu.parquet.gzip',
+        'resources/inhouse/products_under_due_diligence.json'
