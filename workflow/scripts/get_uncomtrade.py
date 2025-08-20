@@ -127,18 +127,35 @@ logging.basicConfig(filename=snakemake.log[0],
                     format='%(asctime)s %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
 
+# Load data
+products_under_due_diligence = pl.read_json(snakemake.input[0])
+
+# Extract cmdCode for products under due diligence
+hs_headings = (
+    products_under_due_diligence
+    .select(pl.col('hs_heading'))
+    .to_series()
+    .to_list()
+    )
+cmdCode = sorted(
+    list(
+        set.intersection(*map(set, hs_headings))
+        )
+    )
+logging.info(f"\nWood product codes under due diligence: {cmdCode} \n")
+
 # Download data from UN Comtrade database
 UN_Comtrade_data, check_list = get_uncomtrade_bulk(
     snakemake.params['apikey'],
     list(range(snakemake.params['year_start'], snakemake.params['year_stop'])),
-    snakemake.params['cmdCode'],
+    cmdCode,
     snakemake.params['flowCode']
 )
 
 logging.info(f"\nDataframe head:\n {UN_Comtrade_data.head(5)} \n")
 logging.info(f"\nDataframe size (rows, columns):\n {UN_Comtrade_data.shape} \n")
 logging.info(f"\nProducts covered: {UN_Comtrade_data.select(pl.col('cmdCode')).unique().to_series().to_list()} \n")
-logging.info(f"\Years covered: {UN_Comtrade_data.select(pl.col('period')).unique().to_series().to_list()} \n")
+logging.info(f"\nYears covered: {UN_Comtrade_data.select(pl.col('period')).unique().to_series().to_list()} \n")
 
 # Save data if check list passed
 if all(check_list):

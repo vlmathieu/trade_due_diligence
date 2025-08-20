@@ -1,10 +1,11 @@
 rule get_uncomtrade:
+    input:
+        'resources/inhouse/products_under_due_diligence.json'
     output:
         'resources/public/uncomtrade.parquet.gzip'
     params:
         year_start      = config['years']['start'],
         year_stop       = config['years']['stop'],
-        cmdCode         = config['uncomtrade']['cmdCode'],
         flowCode        = list(str(flow) for flow in config['flowCode']),
         apikey          = os.environ['comtrade_apikey']
     log:
@@ -13,4 +14,4 @@ rule get_uncomtrade:
     conda:
         '../envs/comtradeapicall.yaml'
     script:
-        '../scripts/get_uncomtrade_data.py'
+        '../scripts/get_uncomtrade.py'
