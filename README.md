@@ -26,7 +26,7 @@ The workflow code goes into a subfolder `workflow`, while the configuration is s
 All output files generated in the workflow are stored under `results`, unless they are rather retrieved `resources`, in which case they should be stored under resources. The latter subfolder also contains small resources that shall be delivered along with the workflow via git.
 
 # To-do list
-- [ ] Regarder les HS code à retenir :
-    - [ ] Ceux couvert par les politiques (baseline EUTR)
-    - [ ] Ceux avec une correspondance FAO pour estimatio, flux i->i
-- [ ] Une fois fait, réfléchir à la méthode d'aggrégation des productions FAO
+- [x] Regarder les HS code à retenir :
+    - [x] Ceux couvert par les politiques (baseline EUTR)
+    - [x] Ceux avec une correspondance FAO pour estimatio, flux i->i
+- [x] Une fois fait, réfléchir à la méthode d'aggrégation des productions FAO
