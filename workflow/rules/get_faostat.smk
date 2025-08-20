@@ -9,4 +9,4 @@ rule get_faostat:
     conda:
         '../envs/faostat.yaml'
     script:
-        '../scripts/get_faostat_data.py'
+        '../scripts/get_faostat.py'
