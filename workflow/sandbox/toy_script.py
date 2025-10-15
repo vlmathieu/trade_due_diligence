@@ -21,6 +21,11 @@ uncomtrade_data = pl.read_parquet('/Users/valentinmathieu/Desktop/wd/trade_due_d
 input_data = pl.read_parquet('/Users/valentinmathieu/Desktop/wd/trade_due_diligence/results/input/input_uncomtrade.parquet.gzip')
 input_data_eu = pl.read_parquet('/Users/valentinmathieu/Desktop/wd/trade_due_diligence/results/intermediary/input_uncomtrade_eu.parquet.gzip')
 
+input_data.write_csv(
+    '/Users/valentinmathieu/Desktop/input_uncomtrade.csv',
+    separator=';'
+)
+
 dic = {'lacey_act': {'year': 2008, 'country': ['USA'], 'iso': ['USA']}, 'ilpa': {'year': 2012, 'country': ['Australia'], 'iso': ['AUS']}, 'eutr': {'year': 2013, 'country': ['Austria', 'Belgium', 'Belgium-Luxembourg (...1998)', 'Bulgaria', 'Croatia', 'Cyprus', 'Czechia', 'Denmark', 'Estonia', 'Finland', 'France', 'Germany', 'Greece', 'Hungary', 'Ireland', 'Italy', 'Latvia', 'Lithuania', 'Luxembourg', 'Malta', 'Netherlands', 'Poland', 'Portugal', 'Romania', 'Slovakia', 'Slovenia', 'Spain', 'Sweden', 'United Kingdom'], 'iso': ['AUT', 'BEL', 'BGR', 'CYP', 'CZE', 'DEU', 'DNK', 'ESP', 'EST', 'FIN', 'FRA', 'GBR', 'GRC', 'HRV', 'HUN', 'IRL', 'ITA', 'LTU', 'LUX', 'LVA', 'MLT', 'NLD', 'POL', 'PRT', 'ROU', 'SVK', 'SVN', 'SWE']}, 'cwa': {'year': 2016, 'country': ['Japan'], 'iso': ['JPN']}, 'asut': {'year': 2018, 'country': ['Rep. of Korea'], 'iso': ['KOR']}}
 policies = list(dic.keys())
 dic['lacey_act']['country']
