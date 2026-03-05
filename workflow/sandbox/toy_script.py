@@ -59,3 +59,155 @@ for _ in policies:
                 .alias(f'partner_{_}')
             )
     )
+
+###########
+
+# Function
+def hs_disaggregate(hs_codes, hs, level_up: str):
+    '''
+    Function that disaggregates HS codes from aggregated levels (HS2 or HS4) to
+    disaggregated level (HS4 or HS6).
+
+    Parameters
+    ----------
+    hs_codes : polars dataframe
+        The dataframe containing the HS codes to disaggregate.
+    hs : polars dataframe
+        The dataframe of all HS codes at all levels for all classifications.
+    level_up : string
+        The level to disaggregate.
+
+    Returns
+    -------
+    hs_codes_low : polars dataframe
+        A dataframe with the disaggregated HS codes.
+    '''
+
+    # Columns to keep
+    col_keep = ['country',
+                'due_diligence_policy',
+                'year_signature',
+                'year_implementation',
+                'classification',
+                'code']
+
+    # Get all HS codes at the upper level
+    codes_up = (hs_codes.filter(pl.col('level') == level_up)
+                .select(pl.col('code'))
+                .unique()
+                .to_series()
+                .to_list())
+
+    # Get corresponding disaggregated HS codes (one level lower)
+    hs_codes_up_to_low = (hs.filter(pl.col('parent_code').is_in(codes_up))
+                            .select(pl.exclude('description')))
+
+    # Filter HS codes to keep row at the upper level
+    hs_codes_up = (hs_codes.filter(pl.col('level') == level_up)
+                   .select(col_keep))
+
+    # Join with the disaggregated HS codes
+    hs_codes_low = hs_codes_up.join(
+        hs_codes_up_to_low,
+        left_on=['classification', 'code'],
+        right_on=['classification', 'parent_code']
+    )
+    
+    return hs_codes_low
+
+# Load data
+hs = pl.read_csv(
+    "resources/public/hs_code.csv",
+    infer_schema=False
+)
+due_diligence_hs_raw = pl.read_csv(
+    "resources/inhouse/due_diligence_hs_code_raw.csv",
+    infer_schema=False
+)
+
+# Data processing
+
+hs2_codes = (due_diligence_hs_raw
+    .filter(pl.col('level') == '2')
+    .select(pl.col('code'))
+    .unique()
+    .to_series()
+    .to_list()
+)
+
+hs2_to_hs4_codes = (hs
+    .filter(pl.col('parent_code').is_in(hs2_codes))
+    .select(pl.col('code'))
+    .unique()
+    .to_series()
+    .to_list()
+)
+
+hs4_codes = list(
+    set(
+        hs2_to_hs4_codes + 
+        due_diligence_hs_raw
+        .filter(pl.col('level') == '4')
+        .select(pl.col('code'))
+        .unique()
+        .to_series()
+        .to_list()
+    )
+)
+
+hs4_to_hs6_codes = (hs
+    .filter(pl.col('parent_code').is_in(hs4_codes))
+    .select(pl.exclude('description'))
+)
+
+col_keep = ['country', 'due_diligence_policy', 'year_signature', 'year_implementation', 'classification',
+            'code']
+due_diligence_hs4 = (due_diligence_hs_raw
+    .filter(pl.col('level') == '4')
+    .select(col_keep)
+)
+
+test = due_diligence_hs4.join(
+    hs4_to_hs6_codes,
+    left_on=['classification', 'code'],
+    right_on=['classification', 'parent_code']
+)
+
+
+hs_codes = due_diligence_hs_raw
+hs = hs
+level_up = '2'
+
+# Columns to keep
+col_keep = ['country',
+            'due_diligence_policy',
+            'year_signature',
+            'year_implementation',
+            'classification',
+            'code']
+
+# Get all HS codes at the upper level
+hs_codes_up = (hs_codes.filter(pl.col('level') == level_up)
+                .select(pl.col('code'))
+                .unique()
+                .to_series()
+                .to_list())
+
+# Get corresponding disaggregated HS codes (one level lower)
+hs_codes_up_to_low = (hs.filter(pl.col('parent_code').is_in(hs_codes_up))
+                        .select(pl.exclude('description')))
+
+# Filter HS codes to keep row at the upper level
+hs_codes_filter_up = (due_diligence_hs_raw.filter(pl.col('level') == level_up)
+                      .select(col_keep))
+
+# Join with the disaggregated HS codes
+hs_codes_low = hs_codes_filter_up.join(
+    hs_codes_up_to_low,
+    left_on=['classification', 'code'],
+    right_on=['classification', 'parent_code']
+)
+
+hs_codes_low
+
+test = hs_disaggregate(hs_codes=due_diligence_hs_raw, hs=hs, level_up='2')
