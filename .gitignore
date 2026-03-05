@@ -246,6 +246,7 @@ rsconnect/
 *.csv
 *.pkl
 *.xlsx
+*.json
 
 # Prevent users to commit snakemake logs ans metadata
 *.snakemake
