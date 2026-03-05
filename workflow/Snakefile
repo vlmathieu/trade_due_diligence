@@ -13,6 +13,7 @@ envvars:
 
 # load rules
 include: 'rules/products_under_due_diligence.smk'
+include: 'rules/hs_code_processing.smk'
 include: 'rules/get_uncomtrade.smk'
 include: 'rules/get_faostat.smk'
 include: 'rules/corresponding_table.smk'
@@ -24,11 +25,13 @@ include: 'rules/aggregate_eu.smk'
 # target rule
 rule all:
     input:
-        'resources/public/uncomtrade.parquet.gzip',
-        'resources/public/faostat.csv',
-        'resources/inhouse/corresponding_table.csv',
-        'results/input/input_faostat.csv',
-        'results/intermediary/processed_faostat.csv',
-        'results/input/input_uncomtrade.parquet.gzip',
-        'results/input/input_uncomtrade_eu.parquet.gzip',
-        'resources/inhouse/products_under_due_diligence.json'
+        'resources/inhouse/due_diligence_codes_hs6.csv',
+        'resources/inhouse/placebo_codes_hs6.csv',
+        # 'resources/public/uncomtrade.parquet.gzip',
+        # 'resources/public/faostat.csv',
+        # 'resources/inhouse/corresponding_table.csv',
+        # 'results/input/input_faostat.csv',
+        # 'results/intermediary/processed_faostat.csv',
+        # 'results/input/input_uncomtrade.parquet.gzip',
+        # 'results/input/input_uncomtrade_eu.parquet.gzip',
+        # 'resources/inhouse/products_under_due_diligence.json'
