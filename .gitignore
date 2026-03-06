@@ -250,3 +250,6 @@ rsconnect/
 
 # Prevent users to commit snakemake logs ans metadata
 *.snakemake
+
+# Prevent users to commit old files
+x_archives/
