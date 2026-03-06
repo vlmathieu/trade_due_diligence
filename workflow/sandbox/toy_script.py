@@ -62,20 +62,18 @@ for _ in policies:
 
 ###########
 
-due_diligence_codes_hs6 = pl.read_csv(
-    'resources/inhouse/due_diligence_codes_hs6.csv',
+placebo_codes_hs6 = pl.read_csv(
+    'resources/inhouse/placebo_codes_hs6.csv',
     infer_schema=False
 )
-due_diligence_hs_headings = sorted(list(set(
-        due_diligence_codes_hs6
+placebo_codes = ['7', '8', '9', '10', '11']
+placebo_cmdCode = sorted(list(set(
+        placebo_codes_hs6
+        .filter(pl.col('parent_code').is_in(placebo_codes))
         .select(pl.col('code'))
         .to_series()
         .to_list()
         )
     )
 )
-due_diligence_cmdCode = sorted(
-    list(
-        set.intersection(*map(set, due_diligence_hs_headings))
-        )
-    )
+placebo_codes_hs6.select(pl.col('parent_code'))
