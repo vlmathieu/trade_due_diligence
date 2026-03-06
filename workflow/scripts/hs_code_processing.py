@@ -91,7 +91,7 @@ placebo_hs6 = hs_disaggregate(
     codes=placebo_codes,
     hs=hs_classification,
     level_up='4'
-)
+).sort(['year_signature', 'year_implementation', 'code'])
 logging.info(f"\nDue diligence HS4 to HS6 codes: \n {due_diligence_hs4_to_hs6}\n")
 
 # Concatenate with due diligence HS6 codes
