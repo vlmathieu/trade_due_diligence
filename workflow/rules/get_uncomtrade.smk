@@ -1,8 +1,11 @@
 rule get_uncomtrade:
     input:
-        'resources/inhouse/products_under_due_diligence.json'
+        'resources/inhouse/due_diligence_codes_hs6.csv',
+        'resources/inhouse/placebo_codes_hs6.csv'
+        # 'resources/inhouse/products_under_due_diligence.json'
     output:
-        'resources/public/uncomtrade.parquet.gzip'
+        'resources/public/due_diligence_data.parquet.gzip',
+        'resources/public/placebo_data.parquet.gzip'
     params:
         year_start      = config['years']['start'],
         year_stop       = config['years']['stop'],

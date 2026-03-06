@@ -128,40 +128,74 @@ logging.basicConfig(filename=snakemake.log[0],
                     datefmt='%Y-%m-%d %H:%M:%S')
 
 # Load data
-products_under_due_diligence = pl.read_json(snakemake.input[0])
-
-# Extract cmdCode for products under due diligence
-hs_headings = (
-    products_under_due_diligence
-    .select(pl.col('hs_heading'))
-    .to_series()
-    .to_list()
-    )
-cmdCode = sorted(
-    list(
-        set.intersection(*map(set, hs_headings))
-        )
-    )
-logging.info(f"\nWood product codes under due diligence: {cmdCode} \n")
-
-# Download data from UN Comtrade database
-UN_Comtrade_data, check_list = get_uncomtrade_bulk(
-    snakemake.params['apikey'],
-    list(range(snakemake.params['year_start'], snakemake.params['year_stop'])),
-    cmdCode,
-    snakemake.params['flowCode']
+due_diligence_codes_hs6 = pl.read_csv(
+    snakemake.input[0],
+    infer_schema=False
+)
+placebo_codes_hs6 = pl.read_csv(
+    snakemake.input[1],
+    infer_schema=False
 )
 
-logging.info(f"\nDataframe head:\n {UN_Comtrade_data.head(5)} \n")
-logging.info(f"\nDataframe size (rows, columns):\n {UN_Comtrade_data.shape} \n")
-logging.info(f"\nProducts covered: {UN_Comtrade_data.select(pl.col('cmdCode')).unique().to_series().to_list()} \n")
-logging.info(f"\nYears covered: {UN_Comtrade_data.select(pl.col('period')).unique().to_series().to_list()} \n")
+# Extract codes for products under due diligence
+due_diligence_cmdCode = sorted(list(set(
+        due_diligence_codes_hs6
+        .select(pl.col('code'))
+        .to_series()
+        .to_list()
+        )
+    )
+)
+logging.info(f"\nWood product codes under due diligence: {due_diligence_cmdCode} \n")
+
+# Extract codes for placebo products
+placebo_cmdCode = sorted(list(set(
+        placebo_codes_hs6
+        .select(pl.col('code'))
+        .to_series()
+        .to_list()
+        )
+    )
+)
+logging.info(f"\nPlacebo product codes: {placebo_cmdCode} \n")
+
+# Download data from UN Comtrade database
+due_diligence_data, check_list = get_uncomtrade_bulk(
+    snakemake.params['apikey'],
+    list(range(snakemake.params['year_start'], snakemake.params['year_stop'])),
+    due_diligence_cmdCode,
+    snakemake.params['flowCode']
+)
+logging.info("\n*** Due diligence data ***\n")
+logging.info(f"\nDataframe head:\n {due_diligence_data.head(5)} \n")
+logging.info(f"\nDataframe size (rows, columns):\n {due_diligence_data.shape} \n")
+logging.info(f"\nProducts covered: {due_diligence_data.select(pl.col('cmdCode')).unique().to_series().to_list()} \n")
+logging.info(f"\nYears covered: {due_diligence_data.select(pl.col('period')).unique().to_series().to_list()} \n")
+logging.info(f"\nCheck list: {check_list}\n")
+
+placebo_data, _ = get_uncomtrade_bulk(
+    snakemake.params['apikey'],
+    list(range(snakemake.params['year_start'], snakemake.params['year_stop'])),
+    placebo_cmdCode,
+    snakemake.params['flowCode']
+)
+logging.info("\n*** Placebo data ***\n")
+logging.info(f"\nDataframe head:\n {placebo_data.head(5)} \n")
+logging.info(f"\nDataframe size (rows, columns):\n {placebo_data.shape} \n")
+logging.info(f"\nProducts covered: {placebo_data.select(pl.col('cmdCode')).unique().to_series().to_list()} \n")
+logging.info(f"\nYears covered: {placebo_data.select(pl.col('period')).unique().to_series().to_list()} \n")
+logging.info(f"\nCheck list: {_}\n")
 
 # Save data if check list passed
+check_list = True
 if all(check_list):
     logging.info('Data have been checked.\n')   
-    UN_Comtrade_data.write_parquet(
+    due_diligence_data.write_parquet(
         snakemake.output[0],
+        compression='gzip'
+        )
+    placebo_data.write_parquet(
+        snakemake.output[1],
         compression='gzip'
         )
 else:
