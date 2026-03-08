@@ -62,18 +62,14 @@ for _ in policies:
 
 ###########
 
-placebo_codes_hs6 = pl.read_csv(
-    'resources/inhouse/placebo_codes_hs6.csv',
+due_diligence_data = pl.read_parquet(
+    'resources/public/due_diligence_data.parquet.gzip',
+)
+due_diligence_codes_hs6 = pl.read_csv(
+    'resources/inhouse/due_diligence_codes_hs6.csv',
     infer_schema=False
 )
-placebo_codes = ['7', '8', '9', '10', '11']
-placebo_cmdCode = sorted(list(set(
-        placebo_codes_hs6
-        .filter(pl.col('parent_code').is_in(placebo_codes))
-        .select(pl.col('code'))
-        .to_series()
-        .to_list()
-        )
-    )
+due_diligence_input = pl.read_csv(
+    'results/input/due_diligence_input.csv',
+    infer_schema=False
 )
-placebo_codes_hs6.select(pl.col('parent_code'))
