@@ -1,7 +1,9 @@
-rule filter_data:
+rule data_preparation:
     input:
         'resources/public/due_diligence_data.parquet.gzip',
-        'resources/public/placebo_data.parquet.gzip'
+        'resources/public/placebo_data.parquet.gzip',
+        'resources/inhouse/due_diligence_codes_hs6.csv',
+        'resources/inhouse/placebo_codes_hs6.csv'
     output:
         'results/input/due_diligence_input.csv',
         'results/input/placebo_input.csv'
@@ -11,9 +13,9 @@ rule filter_data:
         excluded_iso    = config['excluded_iso'],
         col_keep        = config['col_keep']['uncomtrade']
     log:
-        'workflow/logs/filter_data.log'
+        'workflow/logs/data_preparation.log'
     threads: 1
     conda:
         '../envs/polars.yaml'
     script:
-        '../scripts/filter_data.py'
+        '../scripts/data_preparation.py'

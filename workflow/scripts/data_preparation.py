@@ -147,7 +147,10 @@ logging.info(f"Uncomtrade data for product under due diligence downloaded:\n {du
 placebo_data = pl.read_parquet(snakemake.input[1])
 logging.info(f"Placebo data downloaded:\n {placebo_data}\n")
 
-logging.info(f"\nData cover trade until {snakemake.params['year_stop']-2}.\n")
+due_diligence_codes_hs6 = pl.read_csv(snakemake.input[2], infer_schema=False)
+
+placebo_codes_hs6 = pl.read_csv(snakemake.input[3], infer_schema=False)
+
 
 logging.info("\n\n\n*** Processing due diligence data ***\n")
 
@@ -167,14 +170,41 @@ due_diligence_input = drop_outliers(data=due_diligence_input)
 logging.info(f"Saved data after deleting outliers:\n {due_diligence_input}")
 logging.info(f"Saved data after deleting outliers stats:\n {due_diligence_input.describe()}")
 
+# Join parent_code column
+cols = due_diligence_input.columns
+insert = [i+1 for i in range(len(cols)) if cols[i] == 'cmd_code'][0]
+cols[insert:insert] = ['parent_code']
+
+due_diligence_input = (
+    due_diligence_input
+    .join(
+        due_diligence_codes_hs6.select(['code', 'parent_code']).unique(),
+        left_on='cmd_code',
+        right_on='code',
+        how='left'
+    )
+    .select(cols)
+)
+
+# Sort data before saving
+due_diligence_input.sort(['period', 
+                          'reporter_iso', 
+                          'reporter_desc', 
+                          'partner_iso', 
+                          'partner_desc', 
+                          'cmd_code', 
+                          'primary_value'])
+
 # Save input data
 due_diligence_input.write_csv(
     snakemake.output[0],
     separator=','
     )
 
+
 logging.info("\n\n\n*** Processing placebo data ***\n")
 
+# Filter data
 placebo_input = filter_data(
     data=placebo_data,
     col_keep=snakemake.params['col_keep'],
@@ -189,6 +219,31 @@ logging.info(f"Filtered data stats:\n {placebo_input.describe()}\n")
 placebo_input = drop_outliers(data=placebo_input)
 logging.info(f"Saved data after deleting outliers:\n {placebo_input}")
 logging.info(f"Saved data after deleting outliers stats:\n {placebo_input.describe()}")
+
+# Join parent_code column
+cols = placebo_input.columns
+insert = [i+1 for i in range(len(cols)) if cols[i] == 'cmd_code'][0]
+cols[insert:insert] = ['parent_code']
+
+placebo_input = (
+    placebo_input
+    .join(
+        placebo_codes_hs6.select(['code', 'parent_code']).unique(),
+        left_on='cmd_code',
+        right_on='code',
+        how='left'
+    )
+    .select(cols)
+)
+
+# Sort data before saving
+placebo_input.sort(['period', 
+                    'reporter_iso', 
+                    'reporter_desc', 
+                    'partner_iso', 
+                    'partner_desc', 
+                    'cmd_code', 
+                    'primary_value'])
 
 # Save input data
 placebo_input.write_csv(
