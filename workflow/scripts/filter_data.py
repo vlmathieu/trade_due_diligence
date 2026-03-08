@@ -33,6 +33,107 @@ def format_col_names(col_names: list) -> dict:
 
     return col_mapping
 
+def filter_data(data: pl.DataFrame, 
+                col_keep: list, 
+                year_stop: int, 
+                flow_keep: list, 
+                excluded_iso: list) -> pl.DataFrame:
+    '''
+    Function that filter uncomtrade data: select a set of columns for 
+    readibility; filter so that dataframe does not exceed a certain year; keep
+    flow type considered; exclude certain iso codes ~ countries; remove trade
+    flows where reporter == partner; drop duplicates.
+
+    Parameters
+    ----------
+    data : polars dataframe
+        The trade data to filter.
+    col_keep : list of strings
+        The list of column names to keep.
+    year_stop : integer
+        The final year of the trade data considered.
+    flow_keep : list of strings
+        The trade flows to consider.
+    excluded_iso : list of strings
+        The list of ISO code to exclude from data.
+
+    Returns
+    -------
+    filtered_data : polars dataframe
+        The filtered data.
+    '''
+
+    filtered_data = (
+        data
+        .select(col_keep)
+        # Format column names for homogenity
+        .rename(format_col_names(col_names=col_keep))
+        .filter(
+            # Keep data in specified time range
+            pl.col('period') <= str(year_stop-2),
+
+            # Keep trade flow of interest
+            pl.col('flow_code').is_in(flow_keep),
+
+            # Remove non-country reporters and partners
+            (~pl.col('reporter_iso')
+            .str.contains('|'.join(excluded_iso))),
+            (~pl.col('partner_iso')
+            .str.contains('|'.join(excluded_iso))),
+
+            # Delete "auto-" imports or exports (reporter = partner)
+            pl.col('reporter_desc') != pl.col('partner_desc'),
+        )
+        # Drop potential duplicates
+        .unique()
+    )
+
+    return filtered_data
+
+def drop_outliers(data: pl.DataFrame,
+                  percentiles: float = 0.05) :
+    '''
+    Function that drop outliers, i.e., values under the considered percentiles
+    for net weight and primary value.
+
+    Parameters
+    ----------
+    data : polars dataframe
+        The trade data to filter.
+    percentiles : float
+        The percentiles to drop.
+
+    Returns
+    -------
+    outliers_droped_data : polars dataframe
+        The filtered data.
+    '''
+    stats_desc = (
+        data
+        .select(['net_wgt', 'primary_value'])
+        .describe(percentiles=percentiles)
+    )
+
+    min_weight, min_value = (
+        stats_desc
+        .filter(pl.col('statistic').str.contains('%'))
+        .select(['net_wgt', 'primary_value'])
+    )
+
+    outliers_droped_data = (
+        data.filter(
+            # Drop trade flow with net weight (kg) under fifth percentile
+            ((pl.col('net_wgt') > min_weight.item()) | 
+            (pl.col('net_wgt').is_null())),
+
+            # Drop trade flow with value (USD) under fifth percentile
+            ((pl.col('primary_value') > min_value.item()) | 
+            (pl.col('primary_value').is_null()))
+        )
+    )
+
+    return outliers_droped_data
+
 # Log file edition
 logging.basicConfig(filename=snakemake.log[0],
                     level=logging.INFO,
@@ -40,65 +141,57 @@ logging.basicConfig(filename=snakemake.log[0],
                     datefmt='%Y-%m-%d %H:%M:%S')
 
 # Load data
-uncomtrade_data = pl.read_parquet(snakemake.input[0])
-logging.info(f"Uncomtrade downloaded:\n {uncomtrade_data.head(5)}\n")
+due_diligence_data = pl.read_parquet(snakemake.input[0])
+logging.info(f"Uncomtrade data for product under due diligence downloaded:\n {due_diligence_data}\n")
 
-# Filter data for network analysis
-logging.info(f"\nData cover trade until {snakemake.params['year_stop']}.\n")
-input_data = (
-    uncomtrade_data
-        .select(snakemake.params['col_keep'])
-        # Format column names for homogenity
-        .rename(format_col_names(snakemake.params['col_keep']))
-        .filter(
-            # Keep data in specified time range
-            pl.col('period') <= str(snakemake.params['year_stop']-2),
+placebo_data = pl.read_parquet(snakemake.input[1])
+logging.info(f"Placebo data downloaded:\n {placebo_data}\n")
 
-            # Keep trade flow of interest
-            pl.col('flow_code').is_in(snakemake.params['flow_keep']),
+logging.info(f"\nData cover trade until {snakemake.params['year_stop']-2}.\n")
 
-            # Remove non-country reporters and partners
-            (~pl.col('reporter_iso')
-             .str.contains('|'.join(snakemake.params['excluded_iso']))),
-            (~pl.col('partner_iso')
-             .str.contains('|'.join(snakemake.params['excluded_iso']))),
+logging.info("\n\n\n*** Processing due diligence data ***\n")
 
-            # Delete "auto-" imports or exports (reporter = partner)
-            pl.col('reporter_desc') != pl.col('partner_desc'),
-        )
-        # Drop potential duplicates
-        .unique()
+# Filter data
+due_diligence_input = filter_data(
+    data=due_diligence_data,
+    col_keep=snakemake.params['col_keep'],
+    year_stop=snakemake.params['year_stop'],
+    flow_keep=snakemake.params['flow_keep'],
+    excluded_iso=snakemake.params['excluded_iso']
 )
-logging.info(f"Filtered data:\n {input_data.describe()}\n")
+logging.info(f"Filtered data:\n {due_diligence_input}\n")
+logging.info(f"Filtered data stats:\n {due_diligence_input.describe()}\n")
 
 # Drop outliers = values under fifth percentile for weight (kg) and value (USD)
-stats_desc = (
-    input_data
-    .select(['net_wgt', 'primary_value'])
-    .describe(percentiles=[0.05])
-)
-
-min_weight, min_value = (
-    stats_desc
-    .filter(pl.col('statistic') == '5%')
-    .select(['net_wgt', 'primary_value'])
-)
-
-input_data = (
-    input_data.filter(
-        # Drop trade flow with net weight (kg) under fifth percentile
-        ((pl.col('net_wgt') > min_weight.item()) | 
-         (pl.col('net_wgt').is_null())),
-
-        # Drop trade flow with value (USD) under fifth percentile
-        pl.col('primary_value') > min_value.item()
-    )
-)
-logging.info(f"Saved data after deleting outliers:\n {input_data.describe()}")
+due_diligence_input = drop_outliers(data=due_diligence_input)
+logging.info(f"Saved data after deleting outliers:\n {due_diligence_input}")
+logging.info(f"Saved data after deleting outliers stats:\n {due_diligence_input.describe()}")
 
 # Save input data
-input_data.write_parquet(
+due_diligence_input.write_csv(
     snakemake.output[0],
-    compression='gzip'
+    separator=','
     )
-logging.info("Data saved.")
+
+logging.info("\n\n\n*** Processing placebo data ***\n")
+
+placebo_input = filter_data(
+    data=placebo_data,
+    col_keep=snakemake.params['col_keep'],
+    year_stop=snakemake.params['year_stop'],
+    flow_keep=snakemake.params['flow_keep'],
+    excluded_iso=snakemake.params['excluded_iso']
+)
+logging.info(f"Filtered data:\n {placebo_input}\n")
+logging.info(f"Filtered data stats:\n {placebo_input.describe()}\n")
+
+# Drop outliers = values under fifth percentile for weight (kg) and value (USD)
+placebo_input = drop_outliers(data=placebo_input)
+logging.info(f"Saved data after deleting outliers:\n {placebo_input}")
+logging.info(f"Saved data after deleting outliers stats:\n {placebo_input.describe()}")
+
+# Save input data
+placebo_input.write_csv(
+    snakemake.output[1],
+    separator=','
+    )

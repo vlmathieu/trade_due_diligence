@@ -1,8 +1,10 @@
 rule filter_data:
     input:
-        'resources/public/uncomtrade.parquet.gzip'
+        'resources/public/due_diligence_data.parquet.gzip',
+        'resources/public/placebo_data.parquet.gzip'
     output:
-        'results/input/input_uncomtrade.parquet.gzip'
+        'results/input/due_diligence_input.csv',
+        'results/input/placebo_input.csv'
     params:
         year_stop       = config['years']['stop'],
         flow_keep       = config['flow_keep'],
