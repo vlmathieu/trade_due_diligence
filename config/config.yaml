@@ -1,7 +1,7 @@
 # Years of trade
 years:
-  start: 1996
-  stop: 2024  # process will consider stop year - 2 only
+  start:  1996
+  stop:   2024  # process will consider stop year - 2 only
 
 # Trade flows to download --> Imports, Exports
 flowCode: ['M', 'X']
@@ -15,6 +15,13 @@ excluded_iso: ['XX', '_X', '\d']
 #    'Rest of America, nes', 'Free Zones', 'Western Asia, nes',
 #    'CACM, nes', 'LAIA, nes', 'Caribbean, nes', 'Northern Africa, nes',
 #    'North America and Central America, nes']
+
+# Placebo HS parent codes
+placebo:
+  vegetable:            ['06', '07', '08', '09', '10', '11']
+  mineral:              ['25', '26', '27']
+  plastic_rubber:      ['39', '40']
+  stone_ceramic_glass:  ['68', '69', '70']
 
 # Columns to keep for analysis (lighten computation)
 col_keep:
