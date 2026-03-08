@@ -18,13 +18,14 @@ include: 'rules/get_uncomtrade.smk'
 # include: 'rules/get_faostat.smk'
 # include: 'rules/corresponding_table.smk'
 # include: 'rules/process_faostat_data.smk'
-include: 'rules/filter_data.smk'
+include: 'rules/data_preparation.smk'
 # include: 'rules/aggregate_eu.smk'
 # include: 'rules/group_bin.smk'
 
 # target rule
 rule all:
     input:
+        'results/input/due_diligence_input.csv',
         'resources/public/due_diligence_data.parquet.gzip',
         'resources/public/placebo_data.parquet.gzip',
         'resources/inhouse/due_diligence_codes_hs6.csv',
