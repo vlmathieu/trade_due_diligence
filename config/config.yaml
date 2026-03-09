@@ -1,7 +1,7 @@
 # Years of trade
 years:
   start:  1996
-  stop:   2024  # process will consider stop year - 2 only
+  stop:   2025  # process will consider stop year - 2 only
 
 # Trade flows to download --> Imports, Exports
 flowCode: ['M', 'X']
@@ -215,3 +215,70 @@ policy:
     year: 2018
     countries: ['Rep. of Korea']
     iso: ['KOR']
+  countries_list:  
+    desc: ['Australia', 
+           'Austria', 
+           'Belgium', 
+           'Belgium-Luxembourg (...1998)', 
+           'Bulgaria', 
+           'Cyprus', 
+           'Czechia', 
+           'Germany', 
+           'Denmark', 
+           'Spain', 
+           'Estonia', 
+           'Finland', 
+           'France', 
+           'United Kingdom', 
+           'Greece', 
+           'Croatia', 
+           'Hungary', 
+           'Ireland', 
+           'Italy', 
+           'Japan', 
+           'Rep. of Korea', 
+           'Lithuania', 
+           'Luxembourg', 
+           'Latvia', 
+           'Malta', 
+           'Netherlands', 
+           'Poland', 
+           'Portugal', 
+           'Romania', 
+           'Slovakia', 
+           'Slovenia', 
+           'Sweden', 
+           'USA']
+    iso: ['AUS', 
+          'AUT', 
+          'BEL', 
+          'BEL', 
+          'BGR', 
+          'CYP', 
+          'CZE', 
+          'DEU', 
+          'DNK', 
+          'ESP', 
+          'EST', 
+          'FIN', 
+          'FRA', 
+          'GBR', 
+          'GRC', 
+          'HRV', 
+          'HUN', 
+          'IRL', 
+          'ITA', 
+          'JPN', 
+          'KOR', 
+          'LTU', 
+          'LUX', 
+          'LVA', 
+          'MLT', 
+          'NLD', 
+          'POL', 
+          'PRT', 
+          'ROU', 
+          'SVK', 
+          'SVN', 
+          'SWE', 
+          'USA']
