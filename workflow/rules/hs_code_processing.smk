@@ -7,7 +7,9 @@ rule hs_code_processing:
         'resources/inhouse/due_diligence_codes_hs6.csv',
         'resources/inhouse/placebo_codes_hs6.csv'
     params:
-        placebo_codes   = config['placebo']['vegetable']
+        placebo_codes   = config['placebo']['vegetable'],
+        desc            = config['policy']['countries_list']['desc'],
+        iso             = config['policy']['countries_list']['iso']
     log:
         'workflow/logs/hs_code_processing.log'
     threads: 4
