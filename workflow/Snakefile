@@ -21,10 +21,14 @@ include: 'rules/get_uncomtrade.smk'
 include: 'rules/data_preparation.smk'
 # include: 'rules/aggregate_eu.smk'
 # include: 'rules/group_bin.smk'
+include: 'rules/mirror_flow.smk'
+include: 'rules/discrepancies_index.smk'
 
 # target rule
 rule all:
     input:
+        'results/intermediary/discrepancies_index.csv',
+        'results/intermediary/due_diligence_mirror_flows.csv',
         'results/input/due_diligence_input.csv',
         'resources/public/due_diligence_data.parquet.gzip',
         'resources/public/placebo_data.parquet.gzip',
