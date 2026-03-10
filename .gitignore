@@ -253,3 +253,4 @@ rsconnect/
 
 # Prevent users to commit old files
 x_archives/
+resources/inhouse/*.pdf
