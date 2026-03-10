@@ -186,14 +186,33 @@ due_diligence_input = (
     .select(cols)
 )
 
+# Add policy column
+due_diligence_input = (
+    due_diligence_input
+    .join(
+        (
+            due_diligence_codes_hs6
+            .select(['reporter_iso', 'year_implementation', 'code'])
+            .with_columns(policy=pl.lit(1))
+        ),
+        left_on=['reporter_iso', 'period', 'cmd_code'],
+        right_on=['reporter_iso', 'year_implementation', 'code'],
+        how='left'
+    )
+    .with_columns(
+        pl.col('policy').fill_null(0)
+    )
+)
+
 # Sort data before saving
-due_diligence_input.sort(['period', 
-                          'reporter_iso', 
-                          'reporter_desc', 
-                          'partner_iso', 
-                          'partner_desc', 
-                          'cmd_code', 
-                          'primary_value'])
+due_diligence_input = due_diligence_input.sort(['period', 
+                                                'reporter_iso', 
+                                                'partner_iso', 
+                                                'cmd_code', 
+                                                'primary_value'])
+logging.info(f"Saved data after join:\n {due_diligence_input}")
+logging.info(f"Saved data columns:\n {due_diligence_input.columns}")
+logging.info(f"Saved data desc stats:\n {due_diligence_input.describe()}")
 
 # Save input data
 due_diligence_input.write_csv(
@@ -236,14 +255,33 @@ placebo_input = (
     .select(cols)
 )
 
+# Add policy column
+placebo_input = (
+    placebo_input
+    .join(
+        (
+            placebo_codes_hs6
+            .select(['reporter_iso', 'year_implementation', 'code'])
+            .with_columns(policy=pl.lit(1))
+        ),
+        left_on=['reporter_iso', 'period', 'cmd_code'],
+        right_on=['reporter_iso', 'year_implementation', 'code'],
+        how='left'
+    )
+    .with_columns(
+        pl.col('policy').fill_null(0)
+    )
+)
+
 # Sort data before saving
-placebo_input.sort(['period', 
-                    'reporter_iso', 
-                    'reporter_desc', 
-                    'partner_iso', 
-                    'partner_desc', 
-                    'cmd_code', 
-                    'primary_value'])
+placebo_input = placebo_input.sort(['period', 
+                                    'reporter_iso', 
+                                    'partner_iso', 
+                                    'cmd_code', 
+                                    'primary_value'])
+logging.info(f"Saved data after join:\n {placebo_input}")
+logging.info(f"Saved data columns:\n {placebo_input.columns}")
+logging.info(f"Saved data desc stats:\n {placebo_input.describe()}")
 
 # Save input data
 placebo_input.write_csv(
