@@ -15,7 +15,7 @@ envvars:
 # include: 'rules/products_under_due_diligence.smk'
 include: 'rules/hs_code_processing.smk'
 include: 'rules/get_uncomtrade.smk'
-# include: 'rules/get_faostat.smk'
+include: 'rules/get_faostat.smk'
 # include: 'rules/corresponding_table.smk'
 # include: 'rules/process_faostat_data.smk'
 include: 'rules/data_preparation.smk'
@@ -30,6 +30,7 @@ rule all:
         'results/intermediary/discrepancies_index.csv',
         'results/intermediary/due_diligence_mirror_flows.csv',
         'results/input/due_diligence_input.csv',
+        'resources/public/faostat.csv',
         'resources/public/due_diligence_data.parquet.gzip',
         'resources/public/placebo_data.parquet.gzip',
         'resources/inhouse/due_diligence_codes_hs6.csv',
